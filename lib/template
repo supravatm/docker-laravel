@@ -8,7 +8,7 @@ fi
 git init -qqq
 git remote add origin https://github.com/supravatm/docker-laravel
 git fetch origin -qqq
-git checkout origin/master -- compose
+git checkout origin/main -- compose
 
 mv compose/* ./
 mv compose/.gitignore ./
