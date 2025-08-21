@@ -12,7 +12,6 @@ git checkout origin/main -- compose
 
 mv compose/* ./
 mv compose/.gitignore ./
-mv compose/.vscode ./
 rm -rf compose .git
 git init
 
