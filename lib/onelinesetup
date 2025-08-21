@@ -1,0 +1,16 @@
+#!/usr/bin/env bash
+set -o errexit
+
+DOMAIN=${1:-laravel.test}
+VERSION=${2}
+echo $DOMAIN
+echo $VERSION
+
+if [ -d "./src" ]; then
+  echo "Error: The \"src\" directory is not empty. Please remove all contents within this directory and try again."
+  exit 1
+fi
+mkdir ./src
+#curl -s https://raw.githubusercontent.com/supravat/docker-magento/master/lib/template | bash
+
+curl -L https://github.com/laravel/laravel/archive/v8.5.21.tar.gz | tar xz -C ./src/ --strip-components=1
