@@ -11,6 +11,6 @@ if [ -d "./src" ]; then
   exit 1
 fi
 mkdir ./src
-#curl -s https://raw.githubusercontent.com/supravat/docker-magento/master/lib/template | bash
+curl -s https://raw.githubusercontent.com/supravat/docker-magento/master/lib/template | bash
 
-curl -L https://github.com/laravel/laravel/archive/v8.5.21.tar.gz | tar xz -C ./src/ --strip-components=1
+curl -L https://github.com/laravel/framework/archive/refs/tags/v12.25.0.tar.gz | tar xz -C ./src/ --strip-components=1
