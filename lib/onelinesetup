@@ -35,7 +35,7 @@ fi
 cd $DEST_DIR
 
 git init -qqq
-git remote add origin https://github.com/supravatm/docker-laravel
+git remote set-url origin https://github.com/supravatm/docker-laravel
 git fetch origin -qqq
 git checkout origin/main -- compose
 
