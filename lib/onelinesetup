@@ -30,19 +30,18 @@ else
   echo "Error: Failed to clone the repository."
 fi
 
+git checkout -b master
+
 #curl -s https://raw.githubusercontent.com/supravatm/docker-laravel/main/lib/template | bash -s $DEST_DIR
 
-cd $DEST_DIR
-
-git init -qqq
-git remote set-url origin https://github.com/supravatm/docker-laravel
-git fetch origin -qqq
-git checkout origin/main -- compose
+curl -L https://github.com/supravatm/docker-laravel/archive/main.tar.gz | tar xz --strip-components=1
 
 mv compose/* ./
-mv compose/.gitignore ./
-rm -rf compose .git
-git init
 
 # Ensure these are created so Docker doesn't create them as root
 mkdir -p ~/.composer ~/.ssh
+
+#docker run --rm -v "$(pwd)":/app composer install
+
+#docker-compose exec app php artisan key:generate
+#docker-compose exec app php artisan optimize
