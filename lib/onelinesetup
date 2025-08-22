@@ -37,6 +37,7 @@ git checkout -b master
 curl -L https://github.com/supravatm/docker-laravel/archive/main.tar.gz | tar xz --strip-components=1
 
 mv compose/* ./
+rm -rf compose README.md lib
 
 # Ensure these are created so Docker doesn't create them as root
 mkdir -p ~/.composer ~/.ssh
