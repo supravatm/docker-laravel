@@ -1,16 +1,33 @@
 #!/usr/bin/env bash
 set -o errexit
 
-DOMAIN=${1:-laravel.test}
-VERSION=${2}
-echo $DOMAIN
-echo $VERSION
-
-if [ -d "./src" ]; then
-  echo "Error: The \"src\" directory is not empty. Please remove all contents within this directory and try again."
+# Check if a repository URL is provided as an argument
+if [ -z "$1" ]; then
+  echo "Usage: $0 git@github.com:laravel/laravel.git"
   exit 1
 fi
-mkdir ./src
-curl -s https://raw.githubusercontent.com/supravatm/docker-laravel/main/lib/template | bash
 
-curl -L https://github.com/laravel/framework/archive/refs/tags/v12.25.0.tar.gz | tar xz -C ./src/ --strip-components=1
+REPO_URL="$1"
+DEST_DIR="$2" # Optional: specify a destination directory
+VERSION="$3"
+
+# Extract repository name from the URL to use as default destination directory
+REPO_NAME=$(basename "$REPO_URL" .git)
+
+if [ -z "$DEST_DIR" ]; then
+  DEST_DIR="$REPO_NAME"
+fi
+
+echo "Cloning repository: $REPO_URL"
+echo "Into directory: $DEST_DIR"
+
+# Clone the repository
+git clone --branch "$VERSION" --depth 1 "$REPO_URL" "$DEST_DIR"
+
+if [ $? -eq 0 ]; then
+  echo "Repository cloned successfully to $DEST_DIR"
+else
+  echo "Error: Failed to clone the repository."
+fi
+
+curl -s https://raw.githubusercontent.com/supravatm/docker-laravel/main/lib/template | bash
