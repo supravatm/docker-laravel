@@ -30,8 +30,6 @@ else
   echo "Error: Failed to clone the repository."
 fi
 
-git checkout -b master
-
 #curl -s https://raw.githubusercontent.com/supravatm/docker-laravel/main/lib/template | bash -s $DEST_DIR
 
 curl -L https://github.com/supravatm/docker-laravel/archive/main.tar.gz | tar xz --strip-components=1
