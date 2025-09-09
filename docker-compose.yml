@@ -1,0 +1,91 @@
+name: ${PROJECT_NAME}
+services:
+# PHP-FPM 8.4
+  app:
+    container_name: ${PROJECT_NAME}_app
+    build:
+      context: .
+      dockerfile: ./docker/app.dockerfile
+    volumes:
+      - ./src:/var/www/html
+    depends_on:
+      database:
+        condition: service_healthy
+    networks:
+      - default
+  # nginx
+  nginx:
+    container_name: ${PROJECT_NAME}_nginx
+    build:
+      context: .
+      dockerfile: ./docker/nginx.dockerfile
+    ports:
+      - "8080:80"
+    volumes:
+      - ./src:/var/www/html
+    depends_on:
+      - app
+    networks:
+      - default
+  # mysql
+  database:
+    container_name: ${PROJECT_NAME}_mysql
+    image: mysql:8.0
+    environment:
+      MYSQL_DATABASE: ${DB_DATABASE}
+      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
+      MYSQL_PASSWORD: ${DB_PASSWORD}
+      MYSQL_USER: ${DB_USERNAME}
+    ports:
+      - "3306:3306"
+    volumes:
+      - dbdata:/var/lib/mysql
+    networks:
+      - default
+    healthcheck:
+      test: 'mysqladmin ping -h localhost -p${DB_PASSWORD}'
+      interval: 30s
+      timeout: 30s
+      retries: 3
+# phpMyadmin (optional)
+  phpmyadmin:
+    container_name: ${PROJECT_NAME}_phpmyadmin
+    image: phpmyadmin:5.1
+    environment:
+      - PMA_ARBITRARY=1
+      - PMA_HOST=${DB_HOST}
+      - PMA_USER=${DB_USERNAME}
+      - PMA_PASSWORD=${DB_PASSWORD}
+      - PMA_PORT=${DB_PORT}
+    depends_on:
+      database:
+        condition: service_healthy
+    ports:
+      - "8081:80"
+    networks:
+      - default
+# Mail web interface (optional)
+  mailpit:
+    container_name: ${PROJECT_NAME}_mailpit
+    image: axllent/mailpit:latest
+    environment:
+      MP_MAX_MESSAGES: 5000
+      MP_DATABASE: /data/mailpit.db
+      MP_SMTP_AUTH_ACCEPT_ANY: 1
+      MP_SMTP_AUTH_ALLOW_INSECURE: 1
+    ports:
+      - "8025:8025"
+      - "1025:1025"
+    volumes:
+      - mailpit_data:/data
+    networks:
+      - default
+
+networks:
+  default:
+    name: ${PROJECT_NAME}_laravel
+    driver: bridge
+
+volumes:
+  dbdata:
+  mailpit_data:
